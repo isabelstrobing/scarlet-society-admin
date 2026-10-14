@@ -98,8 +98,14 @@ input[type="datetime-local"]:focus {
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
 button {
-  width: 100%;
+  flex: 1;
   padding: 12px 16px;
   background: #333;
   color: white;
@@ -109,7 +115,6 @@ button {
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s;
-  margin-top: 10px;
 }
 
 button:hover:not(:disabled) {
@@ -119,6 +124,39 @@ button:hover:not(:disabled) {
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #666;
+  flex: 1;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #777;
+}
+
+.btn-edit,
+.btn-delete {
+  flex: none;
+  padding: 8px 12px;
+  font-size: 13px;
+  width: auto;
+}
+
+.btn-edit {
+  background: #4CAF50;
+}
+
+.btn-edit:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.btn-delete {
+  background: #f44336;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: #da190b;
 }
 
 .practices-list h2 {
@@ -137,6 +175,20 @@ button:disabled {
   border-radius: 6px;
   margin-bottom: 12px;
   background: #fafafa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.practice-content {
+  flex: 1;
+}
+
+.practice-actions {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
 }
 
 .practice-name {

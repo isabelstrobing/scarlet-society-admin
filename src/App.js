@@ -13,6 +13,7 @@ function App() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     fetchPractices();
@@ -48,21 +49,71 @@ function App() {
 
     try {
       setLoading(true);
-      const response = await axios.post(`${API_URL}/api/practices`, {
-        name: formData.name,
-        date: formData.date,
-        segment: formData.segment
-      });
 
-      setPractices([...practices, response.data]);
+      if (editingId) {
+        await axios.patch(`${API_URL}/api/practices/${editingId}`, {
+          name: formData.name,
+          date: formData.date,
+          segment: formData.segment
+        });
+
+        const updated = practices.map(p =>
+          p.id === editingId
+            ? { ...p, name: formData.name, date: formData.date, segment: formData.segment }
+            : p
+        );
+        setPractices(updated);
+        setMessage('Practice updated successfully!');
+        setEditingId(null);
+      } else {
+        const response = await axios.post(`${API_URL}/api/practices`, {
+          name: formData.name,
+          date: formData.date,
+          segment: formData.segment
+        });
+
+        setPractices([...practices, response.data]);
+        setMessage('Practice created successfully!');
+      }
+
       setFormData({ name: '', date: '', segment: 'holiday_parade_2026' });
-      setMessage('Practice created successfully!');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
-      setMessage(`Error creating practice: ${error.message}`);
+      setMessage(`Error: ${error.message}`);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEdit = (practice) => {
+    setEditingId(practice.id);
+    setFormData({
+      name: practice.name,
+      date: practice.date,
+      segment: practice.segment || 'holiday_parade_2026'
+    });
+    window.scrollTo(0, 0);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this practice?')) return;
+
+    try {
+      setLoading(true);
+      await axios.delete(`${API_URL}/api/practices/${id}`);
+      setPractices(practices.filter(p => p.id !== id));
+      setMessage('Practice deleted successfully!');
+      setTimeout(() => setMessage(''), 3000);
+    } catch (error) {
+      setMessage(`Error deleting practice: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+    setFormData({ name: '', date: '', segment: 'holiday_parade_2026' });
   };
 
   return (
@@ -110,13 +161,20 @@ function App() {
             />
           </div>
 
-          <button type="submit" disabled={loading}>
-            {loading ? 'Creating...' : 'Create Practice'}
-          </button>
+          <div className="form-buttons">
+            <button type="submit" disabled={loading}>
+              {loading ? 'Saving...' : editingId ? 'Update Practice' : 'Create Practice'}
+            </button>
+            {editingId && (
+              <button type="button" onClick={handleCancel} className="btn-secondary">
+                Cancel
+              </button>
+            )}
+          </div>
         </form>
 
         <div className="practices-list">
-          <h2>Upcoming Practices</h2>
+          <h2>Practices</h2>
           {loading && <p>Loading...</p>}
           {practices.length === 0 ? (
             <p className="empty">No practices yet</p>
@@ -124,9 +182,27 @@ function App() {
             <ul>
               {practices.map(practice => (
                 <li key={practice.id}>
-                  <div className="practice-name">{practice.name}</div>
-                  <div className="practice-date">{new Date(practice.date).toLocaleString()}</div>
-                  {practice.segment && <div className="practice-segment">{practice.segment}</div>}
+                  <div className="practice-content">
+                    <div className="practice-name">{practice.name}</div>
+                    <div className="practice-date">{new Date(practice.date).toLocaleString()}</div>
+                    {practice.segment && <div className="practice-segment">{practice.segment}</div>}
+                  </div>
+                  <div className="practice-actions">
+                    <button
+                      onClick={() => handleEdit(practice)}
+                      className="btn-edit"
+                      disabled={loading}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(practice.id)}
+                      className="btn-delete"
+                      disabled={loading}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
