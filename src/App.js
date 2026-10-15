@@ -39,6 +39,16 @@ function App() {
     }));
   };
 
+  const formatDateForInput = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -49,17 +59,18 @@ function App() {
 
     try {
       setLoading(true);
+      const dateISO = new Date(formData.date).toISOString();
 
       if (editingId) {
         await axios.patch(`${API_URL}/api/practices/${editingId}`, {
           name: formData.name,
-          date: formData.date,
+          date: dateISO,
           segment: formData.segment
         });
 
         const updated = practices.map(p =>
           p.id === editingId
-            ? { ...p, name: formData.name, date: formData.date, segment: formData.segment }
+            ? { ...p, name: formData.name, date: dateISO, segment: formData.segment }
             : p
         );
         setPractices(updated);
@@ -68,7 +79,7 @@ function App() {
       } else {
         const response = await axios.post(`${API_URL}/api/practices`, {
           name: formData.name,
-          date: formData.date,
+          date: dateISO,
           segment: formData.segment
         });
 
@@ -89,7 +100,7 @@ function App() {
     setEditingId(practice.id);
     setFormData({
       name: practice.name,
-      date: practice.date,
+      date: formatDateForInput(practice.date),
       segment: practice.segment || 'holiday_parade_2026'
     });
     window.scrollTo(0, 0);
