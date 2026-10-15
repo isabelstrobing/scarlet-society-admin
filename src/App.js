@@ -9,7 +9,7 @@ function App() {
   const [formData, setFormData] = useState({
     name: '',
     date: '',
-    segment: 'holiday_parade_2026'
+    segment: 'Holiday Parade 2026'
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -87,7 +87,7 @@ function App() {
         setMessage('Practice created successfully!');
       }
 
-      setFormData({ name: '', date: '', segment: 'holiday_parade_2026' });
+      setFormData({ name: '', date: '', segment: 'Holiday Parade 2026' });
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
       setMessage(`Error: ${error.message}`);
@@ -163,13 +163,15 @@ function App() {
 
           <div className="form-group">
             <label htmlFor="segment">Segment</label>
-            <input
-              type="text"
+            <select
               id="segment"
               name="segment"
               value={formData.segment}
               onChange={handleInputChange}
-            />
+            >
+              <option value="Scarlet Society Founders">Scarlet Society Founders</option>
+              <option value="Holiday Parade 2026">Holiday Parade 2026</option>
+            </select>
           </div>
 
           <div className="form-buttons">
