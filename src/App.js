@@ -101,7 +101,7 @@ function App() {
     setFormData({
       name: practice.name,
       date: formatDateForInput(practice.date),
-      segment: practice.segment || 'holiday_parade_2026'
+      segment: practice.segment || 'Holiday Parade 2026'
     });
     window.scrollTo(0, 0);
   };
@@ -124,7 +124,7 @@ function App() {
 
   const handleCancel = () => {
     setEditingId(null);
-    setFormData({ name: '', date: '', segment: 'holiday_parade_2026' });
+    setFormData({ name: '', date: '', segment: 'Holiday Parade 2026' });
   };
 
   return (
@@ -169,8 +169,10 @@ function App() {
               value={formData.segment}
               onChange={handleInputChange}
             >
-              <option value="Scarlet Society Founders">Scarlet Society Founders</option>
               <option value="Holiday Parade 2026">Holiday Parade 2026</option>
+              <option value="Pride Parade 2027">Pride Parade 2027</option>
+              <option value="Haunted Happenings 2027">Haunted Happenings 2027</option>
+              <option value="Founders Only">Founders Only</option>
             </select>
           </div>
 
