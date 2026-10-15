@@ -220,3 +220,11 @@ button:disabled {
   padding: 20px;
   font-size: 14px;
 }
+
+.logo {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  margin: 0 auto 24px;
+}

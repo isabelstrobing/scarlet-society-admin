@@ -130,6 +130,7 @@ function App() {
   return (
     <div className="app">
       <div className="container">
+        <img src="/logo.png" alt="Salem Scarlet Society" className="logo" />
         <h1>Scarlet Society Admin</h1>
         <p className="subtitle">Create and manage practices</p>
 
