@@ -39,16 +39,6 @@ function App() {
     }));
   };
 
-  const formatDateForInput = (dateString) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -59,18 +49,18 @@ function App() {
 
     try {
       setLoading(true);
-      const dateISO = new Date(formData.date).toISOString();
+      const dateValue = formData.date; // YYYY-MM-DD, sent exactly as chosen
 
       if (editingId) {
         await axios.patch(`${API_URL}/api/practices/${editingId}`, {
           name: formData.name,
-          date: dateISO,
+          date: dateValue,
           segment: formData.segment
         });
 
         const updated = practices.map(p =>
           p.id === editingId
-            ? { ...p, name: formData.name, date: dateISO, segment: formData.segment }
+            ? { ...p, name: formData.name, date: dateValue, segment: formData.segment }
             : p
         );
         setPractices(updated);
@@ -79,7 +69,7 @@ function App() {
       } else {
         const response = await axios.post(`${API_URL}/api/practices`, {
           name: formData.name,
-          date: dateISO,
+          date: dateValue,
           segment: formData.segment
         });
 
@@ -100,7 +90,7 @@ function App() {
     setEditingId(practice.id);
     setFormData({
       name: practice.name,
-      date: formatDateForInput(practice.date),
+      date: String(practice.date).slice(0, 10),
       segment: practice.segment || 'Holiday Parade 2026'
     });
     window.scrollTo(0, 0);
@@ -151,9 +141,9 @@ function App() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="date">Date & Time</label>
+            <label htmlFor="date">Date</label>
             <input
-              type="datetime-local"
+              type="date"
               id="date"
               name="date"
               value={formData.date}
@@ -200,7 +190,7 @@ function App() {
                 <li key={practice.id}>
                   <div className="practice-content">
                     <div className="practice-name">{practice.name}</div>
-                    <div className="practice-date">{new Date(practice.date).toLocaleString()}</div>
+                    <div className="practice-date">{String(practice.date).slice(0, 10)}</div>
                     {practice.segment && <div className="practice-segment">{practice.segment}</div>}
                   </div>
                   <div className="practice-actions">
